@@ -1,0 +1,119 @@
+# For ROS-CARLA SIMULATOR
+
+# Make sure drivers are >= 390
+# Ususally use 2 global ports (e.g. 2000-2002)
+# docker run -it --rm -p 2000-2002:2000-2002 --gpus all -e NVIDIA_VISIBLE_DEVICES=0 -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=unix$DISPLAY --name ros-carla-01 carla-ros-bridge:custom-01 /bin/bash
+# docker run -it --rm \ 
+# 			 -p 2000-2002:2000-2002 \ 
+# 			 --gpus all -e NVIDIA_VISIBLE_DEVICES=0 \ 
+# 			 -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=unix$DISPLAY \ 
+# 			 -v ./data:/data \
+# 			 --name ros-carla-01 \ 
+# 			 carla-ros-bridge:custom-01 /bin/bash
+
+ARG CARLA_VERSION='0.9.6'
+ARG ROS_VERSION='kinetic'
+FROM nvidia/opengl:1.0-glvnd-runtime-ubuntu16.04
+FROM carlasim/carla:$CARLA_VERSION 
+
+USER root
+RUN apt-get update
+RUN apt-get install -y \
+						python \
+						python-pip \
+						python3 \
+						python3-pip \
+						wget \
+						curl \
+						gedit \
+						eog \
+						apt-transport-https \
+						ca-certificates \
+						libpng16-16 \
+						libsdl2-2.0
+
+##### Install Sublime Text
+# RUN apt-get update
+# RUN wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | apt-key add -
+# RUN echo "deb https://download.sublimetext.com/ apt/stable/" | tee /etc/apt/sources.list.d/sublime-text.list
+# RUN apt-get update
+# RUN apt-get install -y sublime-text
+
+RUN pip install Pillow \
+					numpy==1.14.5 \
+					protobuf==3.6.0 \
+					pygame==1.9.4 \
+					matplotlib==2.2.2 \
+					future==0.16.0 \
+					scipy==0.17.0
+
+
+##### Install ROS and ROS package
+
+ARG ROS_VERSION
+RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu xenial main" > /etc/apt/sources.list.d/ros-latest.list'
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B9316A7BC7917B12
+RUN apt-get update
+RUN apt-get install --allow-unauthenticated -y ros-$ROS_VERSION-ros-base
+RUN rosdep init
+
+USER carla
+RUN rosdep update # command 'rosdep update' need to run in not a root permission.
+
+USER root
+RUN /bin/bash -c 'source /opt/ros/kinetic/setup.bash'
+RUN apt-get install --allow-unauthenticated -y \
+						python-rosinstall \
+						python-rosinstall-generator \
+						python-wstool \
+						build-essential
+
+ARG ROS_VERSION
+RUN apt-get update \
+	&& apt-get install --no-install-recommends --allow-unauthenticated -y \
+						ros-$ROS_VERSION-ackermann-msgs \
+						ros-$ROS_VERSION-derived-object-msgs \
+						ros-$ROS_VERSION-tf \
+						ros-$ROS_VERSION-cv-bridge \
+						ros-$ROS_VERSION-pcl-conversions \
+						ros-$ROS_VERSION-pcl-ros \
+						python-catkin-tools \
+						ros-$ROS_VERSION-rviz \
+	&& rm -rf /var/lib/apt/lists/*
+
+
+##### Install carla-ros-bridge
+
+ARG CARLA_VERSION
+# COPY /home/carla/PythonAPI /opt/carla/PythonAPI
+RUN mkdir -p /opt/carla/PythonAPI && cp -r /home/carla/PythonAPI /opt/carla/
+RUN python -m easy_install /opt/carla/PythonAPI/carla/dist/carla-$CARLA_VERSION-py2.7-linux-x86_64.egg
+
+COPY carla_ackermann_control /opt/carla-ros-bridge/src/carla_ackermann_control
+COPY carla_ego_vehicle /opt/carla-ros-bridge/src/carla_ego_vehicle
+COPY carla_infrastructure /opt/carla-ros-bridge/src/carla_infrastructure
+COPY carla_manual_control /opt/carla-ros-bridge/src/carla_manual_control
+COPY carla_msgs /opt/carla-ros-bridge/src/carla_msgs
+COPY carla_ros_bridge /opt/carla-ros-bridge/src/carla_ros_bridge
+COPY carla_waypoint_publisher /opt/carla-ros-bridge/src/carla_waypoint_publisher
+COPY pcl_recorder /opt/carla-ros-bridge/src/pcl_recorder
+
+RUN /bin/bash -c 'source /opt/ros/$ROS_VERSION/setup.bash; cd /opt/carla-ros-bridge; catkin config --install; catkin build --cmake-args -DCMAKE_BUILD_TYPE=Release'
+
+
+##### Set the system configuration
+USER carla
+ENV HOME /home/carla
+
+USER root
+# ./CARLAUE4.sh cannot run in a root permission.
+RUN apt-get -y install sudo
+RUN echo "carla:carla" | chpasswd && adduser carla sudo
+
+USER carla
+WORKDIR /home/carla
+COPY ./docker/content/ /home/carla
+
+ENV SDL_VIDEODRIVER=x11
+
+CMD /bin/bash
