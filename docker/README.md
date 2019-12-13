@@ -8,5 +8,5 @@ And, run the code below.
 (If you don't install the docker, [please install it.](https://docs.docker.com/install/linux/docker-ce/ubuntu/))
 ```
 cd ~/carla-ros-bridge/ros-bridge/docker
-docker build -t carla-ros-bridge:jimin-custom -f Dockerfile-carla-ros-bridge ..
+docker build --tag carla-ros-bridge:<your_tage_name> -f Dockerfile-carla-ros-bridge ..
 ```
