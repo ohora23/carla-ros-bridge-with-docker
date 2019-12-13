@@ -80,4 +80,30 @@ There is a rviz configuration file in '.config/rviz'
     mv ~/.rviz/carla-ros-config.rviz ~/.rviz/default.rviz
     
 
-    
+<hr/>
+
+# Other tips
+### Log the simulator data with ROSBAG
+
+    # Because of spawning npc, there are too much unneccessary topics, if you use 'rosbag record --all'
+    # rosbag record /carla/actor_list /carla/ego_vehicle/camera/rgb/front/camera_info /carla/ego_vehicle/camera/rgb/front/image_color /carla/ego_vehicle/camera/semantic_segmentation/segmentation1/camera_info /carla/ego_vehicle/camera/semantic_segmentation/segmentation1/image_segmentation /carla/ego_vehicle/lidar/lidar1/point_cloud /carla/ego_vehicle/collision /carla/ego_vehicle/lane_invasion /carla/ego_vehicle/objects /carla/ego_vehicle/odometry /carla/ego_vehicle/vehicle_info /carla/ego_vehicle/vehicle_status /carla/marker /carla/objects /carla/status /tf /tf_static /carla/world_info /clock /carla/contol
+    rosbag record /carla/actor_list \
+                  /carla/ego_vehicle/camera/rgb/front/camera_info \
+                  /carla/ego_vehicle/camera/rgb/front/image_color \
+                  /carla/ego_vehicle/camera/semantic_segmentation/segmentation1/camera_info \
+                  /carla/ego_vehicle/camera/semantic_segmentation/segmentation1/image_segmentation \
+                  /carla/ego_vehicle/lidar/lidar1/point_cloud /carla/ego_vehicle/collision \
+                  /carla/ego_vehicle/lane_invasion \
+                  /carla/ego_vehicle/objects \
+                  /carla/ego_vehicle/odometry \
+                  /carla/ego_vehicle/vehicle_info \
+                  /carla/ego_vehicle/vehicle_status \
+                  /carla/marker \
+                  /carla/objects \
+                  /carla/status \
+                  /tf \
+                  /tf_static \
+                  /carla/world_info \
+                  /clock \
+                  /carla/contol
+
