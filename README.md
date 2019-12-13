@@ -46,7 +46,8 @@ Wait for the message:
 
     Waiting for the client to connect...
 
-Then, to start the ros bridge, set a environment.
+In another terminal, to start the ros bridge, set a environment.
+When opening a new terminal, you should run the code below.
 
     export PYTHONPATH=$PYTHONPATH:/opt/carla/PythonAPI/carla/dist/carla-0.9.6-py2.7-linux-x86_64.egg
     source /opt/carla-ros-bridge/install/setup.bash
@@ -56,6 +57,8 @@ Check the installation is successfull by trying to import carla from python:
     python -c 'import carla;print("Success")'
 
 You should see the Success message without any errors.
+
+#
 
 And start the ros bridge (choose one option):
 
@@ -68,3 +71,10 @@ And start the ros bridge (choose one option):
     # Option 3: start the ros bridge together with an example ego vehicle
     roslaunch carla_ros_bridge carla_ros_bridge_with_example_ego_vehicle.launch
 
+There is a rviz configuration file in '.config/rviz'
+    
+    cp ~/.config/rviz/carla-ros-config.rviz ~/.rviz
+    mv ~/.rviz/carla-ros-config.rviz ~/.rviz/default.rviz
+    
+
+    
