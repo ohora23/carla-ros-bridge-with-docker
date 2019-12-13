@@ -1,5 +1,5 @@
 
-# ROS bridge for CARLA simulator
+# ROS bridge for CARLA simulator (with modified Dockerfile)
 
 This ROS package aims at providing a simple ROS bridge for CARLA simulator.
 (forked from [carla-simulator/ros-bridge](https://github.com/carla-simulator/ros-bridge))
@@ -47,6 +47,9 @@ Wait for the message:
     Waiting for the client to connect...
 
 In another terminal, to start the ros bridge, set a environment.
+
+#
+
 When opening a new terminal, you should run the code below.
 
     export PYTHONPATH=$PYTHONPATH:/opt/carla/PythonAPI/carla/dist/carla-0.9.6-py2.7-linux-x86_64.egg
