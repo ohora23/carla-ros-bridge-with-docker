@@ -4,9 +4,12 @@
 First, clone this repository. ([See this README.md](https://github.com/jjimin/carla-ros-bridge-with-docker))  
 
 #
-And, run the code below.
-(If you don't install the docker, [please install it.](https://docs.docker.com/install/linux/docker-ce/ubuntu/))
+Second, you need to install a docker engine. If you don't install the docker, [please install it.](https://docs.docker.com/install/linux/docker-ce/ubuntu/)
+
+To use your GPU driver, install NVIDIA-docker too. You can figure out how to install in [here](https://github.com/NVIDIA/nvidia-docker.git).
+
+After that, run the code below.
 ```
-cd ~/carla-ros-bridge/ros-bridge/docker
+cd ~/carla-ros-bridge-with-docker/docker
 docker build --tag carla-ros-bridge:<your_tage_name> -f Dockerfile-carla-ros-bridge ..
 ```
