@@ -2,7 +2,7 @@
 #### How to build the 'carla-ros-bridge-with-docker' with this Dockerfile (Dockerfile-carla-ros-bridge)
 <hr/>
 
-First, clone this repository. [See this README.md](./../READMD.md)
+First, clone this repository. [See this README.md](./../README.md)
 
 #
 Second, you need to install a docker engine. If you don't install the docker, [please install it.](https://docs.docker.com/install/linux/docker-ce/ubuntu/)
