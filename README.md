@@ -7,6 +7,11 @@ This ROS package aims at providing a simple ROS bridge for CARLA simulator.
 __Important Note:__
 This documentation is for CARLA versions *newer* than 0.9.4.
 
+__Important Note:__
+This package is under modification to be useful for ROS Melodic version
+This is forked from https://github.com/jjimin/carla-ros-bridge-with-docker
+
+
 ![rviz setup](./docs/images/rviz_carla_default.png "rviz")
 
 
